@@ -10,7 +10,8 @@ import { Container } from './App.styled';
 
 export class App extends Component{
   state = {
-    contacts: [
+    contacts:
+      [
     {id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
     {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
     {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
@@ -19,7 +20,21 @@ export class App extends Component{
     
     filter: '',
   };
+
+  componentDidMount() {
+    const savedContacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(savedContacts);
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+  }  
+  }
   
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
   formSubmitHandler = ({ name, number }, { resetForm }) => {
     const { contacts } = this.state;
     const contactNames = contacts.map(contact => contact.name);
